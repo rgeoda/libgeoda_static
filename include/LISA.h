@@ -2,8 +2,8 @@
 // Created by Xun Li on 2019-06-05.
 //
 
-#ifndef GEODA_ABSTRACTLOCALSA_H
-#define GEODA_ABSTRACTLOCALSA_H
+#ifndef GEODA_LISA_H
+#define GEODA_LISA_H
 
 #include <stdint.h>
 #include <list>
@@ -11,12 +11,12 @@
 
 class GeoDaWeight;
 
-class AbstractLocalSA
+class LISA
 {
 public:
-    AbstractLocalSA(int num_obs, GeoDaWeight* w);
+    LISA(int num_obs, GeoDaWeight* w);
 
-    virtual ~AbstractLocalSA(){};
+    virtual ~LISA(){};
 
     virtual void ComputeLoalSA() = 0;
 
@@ -27,7 +27,11 @@ public:
     virtual void CalcPseudoP_range(int obs_start, int obs_end, uint64_t seed_start);
 
     // compare local SA value of current obs to local SA values of random picked nbrs
-    virtual bool LargerPermLocalSA(int cnt, std::vector<int>& permNeighbors) = 0;
+    virtual void PermLocalSA(int cnt, int perm,
+            const std::vector<int>& permNeighbors,
+            std::vector<double>& permutedSA) = 0;
+
+    virtual uint64_t CountLargerSA(int cnt, const std::vector<double>& permutedSA) = 0;
 
     virtual void Run();
 
@@ -69,6 +73,12 @@ public:
 
     virtual std::vector<int> GetSigCatIndicators();
 
+    virtual std::vector<int> GetNumNeighbors();
+
+    virtual std::vector<double> GetSpatialLagValues();
+
+    virtual std::vector<double> GetLISAValues();
+
     virtual bool IsRowStandardize() const;
 
     virtual void SetRowStandardize(bool rowStandardize);
@@ -76,6 +86,10 @@ public:
     virtual int GetNumThreads() const;
 
     virtual void SetNumThreads(int n_threads);
+
+    virtual std::vector<std::string> GetLabels();
+
+    virtual std::vector<std::string> GetColors();
 
 protected:
     int nCPUs;
@@ -102,7 +116,12 @@ protected:
     std::vector<double> sig_local_vec;
     std::vector<int> sig_cat_vec;
     std::vector<int> cluster_vec;
+    std::vector<double> lag_vec;
+    std::vector<double> lisa_vec;
+    std::vector<int> nn_vec;
+    std::vector<std::string> labels;
+    std::vector<std::string> colors;
 };
 
 
-#endif //GEODA_ABSTRACTLOCALSA_H
+#endif //GEODA_LISA_H
