@@ -12,7 +12,7 @@
 #include <map>
 #include <ogrsf_frmts.h>
 
-class UniLisa;
+class UniLocalMoran;
 class GeoDaWeight;
 
 class GeoDaColumn {
@@ -139,42 +139,12 @@ public:
     std::vector<long long> GetIntegerCol(std::string col_name);
     std::vector<std::string> GetStringCol(std::string col_name);
     std::vector<bool> GetUndefinesCol(std::string col_name);
-
     std::string GetName();
+    std::vector<OGRPoint*> GetCentroids();
+    OGRLayer* GetOGRLayer();
 
-    // Weights functions
-    GeoDaWeight* CreateContiguityWeights(bool is_queen=true, std::string polyid="", int order=1,
-            bool include_lower_order = false,
-            double precision_threshold = 0);
-
-    GeoDaWeight* CreateDistanceWeights(double dist_thres, double power=1.0, bool is_inverse=false);
-
-    // LocalSA functions
-    UniLisa* LISA(GeoDaWeight* w, const std::vector<double>& data,
-            const std::vector<bool>& undefs = std::vector<bool>());
-
-    // Clustering
-    const std::vector<int> SKATER(unsigned int k, GeoDaWeight* w,
-            std::vector<std::string> col_names,
-            const std::string& distance_method="euclidean",
-            const std::string& control_varible="",
-            double control_threshold=0);
-    const std::vector<int> SKATER(unsigned int k, GeoDaWeight* w,
-            std::vector<std::vector<double> >& data,
-            const std::string& distance_method="euclidean",
-            const std::string& control_varible="",
-            double control_threshold=0);
-
-private:
-    const std::vector<int> SKATER(unsigned int k, GeoDaWeight* w,
-            int n_rows, int n_cols, double** distances, double** data,
-            double* bound_vals=0, double min_bound=0);
-
-    double** fullRaggedMatrix(double** matrix, int n, int k, bool isSqrt=false) ;
-
+protected:
     OGRGeometry* CreateOGRGeomFromWkb(unsigned char* wkb, int n);
-
-    const std::vector<OGRPoint*>& GetCentroids();
 
     void ReadAllFeatures();
 
@@ -186,7 +156,6 @@ private:
             const std::vector<int>& wkb_bytes_len,
             const std::string& pszProj4);
 
-protected:
     static const std::string DT_STRING;
     static const std::string DT_INTEGER;
     static const std::string DT_NUMERIC;
@@ -213,4 +182,6 @@ int test();
 GeoDaColumn* ToGeoDaColumn(GeoDaStringColumn* col);
 GeoDaColumn* ToGeoDaColumn(GeoDaIntColumn* col);
 GeoDaColumn* ToGeoDaColumn(GeoDaRealColumn* col);
+
+
 #endif

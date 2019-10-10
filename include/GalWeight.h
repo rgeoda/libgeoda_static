@@ -35,6 +35,7 @@ public:
 	const std::vector<long>& GetNbrs() const;
 	const std::vector<double>& GetNbrWeights() const;
 	void SortNbrs();
+    void ReverseNbrs();
 	long Size() const { return nbr.size(); }
 	long operator[](size_t n) const { return nbr[n]; }
 	double SpatialLag(const std::vector<double>& x) const;
@@ -125,6 +126,8 @@ namespace Gda {
                           const std::vector<wxString>& id_vec);
     
 	void MakeHigherOrdContiguity(size_t distance, size_t obs, GalElement* W, bool cummulative);
+
+    GalElement* GetGalElement(GeoDaWeight* w);
 }
 
 #endif
