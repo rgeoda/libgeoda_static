@@ -7,7 +7,7 @@
 
 #include <stdint.h>
 #include <list>
-
+#include <string>
 
 class GeoDaWeight;
 
