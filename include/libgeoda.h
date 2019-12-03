@@ -12,8 +12,12 @@
 #include <map>
 #include <ogrsf_frmts.h>
 
-class UniLocalMoran;
-class GeoDaWeight;
+// forward declaration
+namespace gda {
+    struct Point;
+    struct PolygonContents;
+    struct MainMap;
+}
 
 class GeoDaColumn {
 public:
@@ -99,7 +103,7 @@ protected:
 
 class GeoDa {
 public:
-    enum MapType { point_type, polygon_type, line_type };
+    enum MapType { point_type, polygon_type, line_type, unknown_type };
 
     // this constructor is for Python
     GeoDa(GeoDaTable* table,
@@ -123,30 +127,36 @@ public:
     virtual ~GeoDa();
 
     // Layer functions
-    MapType GetMapType() const;
     int GetNumObs() const;
     int GetNumCols() const;
     std::vector<std::string> GetFieldTypes();
     std::vector<std::string> GetFieldNames();
+    std::string GetName();
+    OGRLayer* GetOGRLayer();
 
     // Geometry functions
     std::vector<std::vector<unsigned char> >  GetGeometryWKB();
     std::vector<std::string>  GetGeometryWKT();
     //void SpatialCount(const char* pDSPath);
+    int GetMapType();
+    const std::vector<gda::Point>& GetCentroids();
+    gda::MainMap& GetMainMap();
 
     // Data functions
     std::vector<double> GetNumericCol(std::string col_name);
     std::vector<long long> GetIntegerCol(std::string col_name);
     std::vector<std::string> GetStringCol(std::string col_name);
     std::vector<bool> GetUndefinesCol(std::string col_name);
-    std::string GetName();
-    std::vector<OGRPoint*> GetCentroids();
-    OGRLayer* GetOGRLayer();
+
 
 protected:
     OGRGeometry* CreateOGRGeomFromWkb(unsigned char* wkb, int n);
 
     void ReadAllFeatures();
+
+    bool ParseOGRFeatures();
+
+    void CopyEnvelope(OGRPolygon* p, gda::PolygonContents* pc);
 
 	void Init(const std::string& layer_name,
             const std::string& map_type,
@@ -173,8 +183,10 @@ protected:
     std::vector<std::string> fieldTypes;
     std::map<std::string, unsigned int> fieldNameIdx;
 
-    std::vector<OGRPoint*> centroids;
+    std::vector<gda::Point> centroids;
     std::vector<OGRFeature*> features;
+
+    gda::MainMap* main_map;
 };
 
 int test();

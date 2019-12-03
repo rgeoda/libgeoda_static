@@ -16,7 +16,7 @@ class LISA
 public:
     LISA(int num_obs, GeoDaWeight* w);
 
-    virtual ~LISA(){};
+    virtual ~LISA();
 
     virtual void ComputeLoalSA() = 0;
 
@@ -44,11 +44,9 @@ public:
     virtual double GetUserCutoff();
     virtual void SetUserCutoff(double val);
 
-    virtual double GetBO();
-    virtual void SetBO(double val);
+    virtual double GetBO(double current_p);
 
-    virtual double GetFDR();
-    virtual void SetFDR(double val);
+    virtual double GetFDR(double current_p);
 
     virtual int GetNumPermutations();
     virtual void SetNumPermutations(int val);
@@ -101,8 +99,6 @@ protected:
     int permutations; // any number from 9 to 99999, 99 will be default
 
     double significance_cutoff; // either 0.05, 0.01, 0.001 or 0.0001
-    double bo; //Bonferroni bound
-    double fdr; //False Discovery Rate
     double user_sig_cutoff; // user defined cutoff
 
     bool has_undefined;
