@@ -31,11 +31,11 @@ public:
 
     void setScores(const std::vector<float> &scores);
 
-    void setLoadings(const std::vector<std::vector<float>> &loadings);
+    void setLoadings(const std::vector<std::vector<float> > &loadings);
 
-    void setSqCorrelations(const std::vector<std::vector<float>> &sqCorrelations);
+    void setSqCorrelations(const std::vector<std::vector<float> > &sqCorrelations);
 
-    void setPriComponents(const std::vector<std::vector<float>> &priComponents);
+    void setPriComponents(const std::vector<std::vector<float> > &priComponents);
 
     std::string getMethod() const;
 
@@ -49,13 +49,13 @@ public:
 
     std::vector<float> getEigenValues() ;
 
-    std::vector<std::vector<float>> getLoadings() ;
+    std::vector<std::vector<float> > getLoadings() ;
 
-    std::vector<std::vector<float>> getSqCorrelations() ;
+    std::vector<std::vector<float> > getSqCorrelations() ;
 
-    std::vector<std::vector<float>> getPriComponents() ;
+    std::vector<std::vector<float> > getPriComponents() ;
 
-    std::vector<std::vector<float>> getKComponents(int k) ;
+    std::vector<std::vector<float> > getKComponents(int k) ;
 
     void setKaiser(float kaiser);
 

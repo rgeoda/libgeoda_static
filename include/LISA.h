@@ -14,7 +14,9 @@ class GeoDaWeight;
 class LISA
 {
 public:
-    LISA(int num_obs, GeoDaWeight* w);
+    LISA(int num_obs, GeoDaWeight* w, int nCPUs = 8,
+            int permutations = 999,
+            uint64_t last_seed_used = 123456789);
 
     virtual ~LISA();
 
