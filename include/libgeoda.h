@@ -12,8 +12,12 @@
 #include <map>
 #include <ogrsf_frmts.h>
 
-class UniLisa;
-class GeoDaWeight;
+// forward declaration
+namespace gda {
+    struct Point;
+    struct PolygonContents;
+    struct MainMap;
+}
 
 class GeoDaColumn {
 public:
@@ -99,7 +103,7 @@ protected:
 
 class GeoDa {
 public:
-    enum MapType { point_type, polygon_type, line_type };
+    enum MapType { point_type, polygon_type, line_type, unknown_type };
 
     // this constructor is for Python
     GeoDa(GeoDaTable* table,
@@ -123,16 +127,20 @@ public:
     virtual ~GeoDa();
 
     // Layer functions
-    MapType GetMapType() const;
     int GetNumObs() const;
     int GetNumCols() const;
     std::vector<std::string> GetFieldTypes();
     std::vector<std::string> GetFieldNames();
+    std::string GetName();
+    OGRLayer* GetOGRLayer();
 
     // Geometry functions
     std::vector<std::vector<unsigned char> >  GetGeometryWKB();
     std::vector<std::string>  GetGeometryWKT();
     //void SpatialCount(const char* pDSPath);
+    int GetMapType();
+    const std::vector<gda::Point>& GetCentroids();
+    gda::MainMap& GetMainMap();
 
     // Data functions
     std::vector<double> GetNumericCol(std::string col_name);
@@ -140,43 +148,15 @@ public:
     std::vector<std::string> GetStringCol(std::string col_name);
     std::vector<bool> GetUndefinesCol(std::string col_name);
 
-    std::string GetName();
 
-    // Weights functions
-    GeoDaWeight* CreateContiguityWeights(bool is_queen=true, std::string polyid="", int order=1,
-            bool include_lower_order = false,
-            double precision_threshold = 0);
-
-    GeoDaWeight* CreateDistanceWeights(double dist_thres, double power=1.0, bool is_inverse=false);
-
-    // LocalSA functions
-    UniLisa* LISA(GeoDaWeight* w, const std::vector<double>& data,
-            const std::vector<bool>& undefs = std::vector<bool>());
-
-    // Clustering
-    const std::vector<int> SKATER(unsigned int k, GeoDaWeight* w,
-            std::vector<std::string> col_names,
-            const std::string& distance_method="euclidean",
-            const std::string& control_varible="",
-            double control_threshold=0);
-    const std::vector<int> SKATER(unsigned int k, GeoDaWeight* w,
-            std::vector<std::vector<double> >& data,
-            const std::string& distance_method="euclidean",
-            const std::string& control_varible="",
-            double control_threshold=0);
-
-private:
-    const std::vector<int> SKATER(unsigned int k, GeoDaWeight* w,
-            int n_rows, int n_cols, double** distances, double** data,
-            double* bound_vals=0, double min_bound=0);
-
-    double** fullRaggedMatrix(double** matrix, int n, int k, bool isSqrt=false) ;
-
+protected:
     OGRGeometry* CreateOGRGeomFromWkb(unsigned char* wkb, int n);
 
-    const std::vector<OGRPoint*>& GetCentroids();
-
     void ReadAllFeatures();
+
+    bool ParseOGRFeatures();
+
+    void CopyEnvelope(OGRPolygon* p, gda::PolygonContents* pc);
 
 	void Init(const std::string& layer_name,
             const std::string& map_type,
@@ -186,7 +166,6 @@ private:
             const std::vector<int>& wkb_bytes_len,
             const std::string& pszProj4);
 
-protected:
     static const std::string DT_STRING;
     static const std::string DT_INTEGER;
     static const std::string DT_NUMERIC;
@@ -204,8 +183,10 @@ protected:
     std::vector<std::string> fieldTypes;
     std::map<std::string, unsigned int> fieldNameIdx;
 
-    std::vector<OGRPoint*> centroids;
+    std::vector<gda::Point> centroids;
     std::vector<OGRFeature*> features;
+
+    gda::MainMap* main_map;
 };
 
 int test();
@@ -213,4 +194,6 @@ int test();
 GeoDaColumn* ToGeoDaColumn(GeoDaStringColumn* col);
 GeoDaColumn* ToGeoDaColumn(GeoDaIntColumn* col);
 GeoDaColumn* ToGeoDaColumn(GeoDaRealColumn* col);
+
+
 #endif
