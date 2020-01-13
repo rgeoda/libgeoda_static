@@ -15,16 +15,21 @@ std::vector<std::vector<double> > gda_standardize(const std::vector<std::vector<
 
 std::vector<std::vector<double> > gda_standardize_mad(const std::vector<std::vector<double> >& data);
 
-std::vector<double>  gda_naturalbreaks(int k, const std::vector<double>& data, std::vector<bool>&  undefs);
+std::vector<double>  gda_naturalbreaks(int k, const std::vector<double>& data, const std::vector<bool>&  undefs = std::vector<bool>());
 
-std::vector<double>  gda_guantilebreaks(int k, const std::vector<double>& data, std::vector<bool>&  undefs);
+std::vector<double>  gda_guantilebreaks(int k, const std::vector<double>& data, const std::vector<bool>&  undefs =
+        std::vector<bool>());
 
-std::vector<double>  gda_hinge15breaks(int k, const std::vector<double>& data, std::vector<bool>&  undefs);
+std::vector<double>  gda_hinge15breaks(const std::vector<double>& data, const std::vector<bool>&  undefs =
+        std::vector<bool>());
 
-std::vector<double>  gda_hinge30breaks(int k, const std::vector<double>& data, std::vector<bool>&  undefs);
+std::vector<double>  gda_hinge30breaks(const std::vector<double>& data, const std::vector<bool>&  undefs =
+        std::vector<bool>());
 
-std::vector<double>  gda_percentilebreaks(int k, const std::vector<double>& data, std::vector<bool>&  undefs);
+std::vector<double>  gda_percentilebreaks(const std::vector<double>& data, const std::vector<bool>&  undefs =
+        std::vector<bool>());
 
-std::vector<double>  gda_stddevbreaks(int k, const std::vector<double>& data, std::vector<bool>&  undefs);
+std::vector<double>  gda_stddevbreaks( const std::vector<double>& data, const std::vector<bool>&  undefs =
+        std::vector<bool>());
 
 #endif //GEODA_GDA_DATA_H
